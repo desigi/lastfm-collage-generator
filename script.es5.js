@@ -1,7 +1,7 @@
 'use strict';
 
 var canvas = void 0,
-    c = void 0;
+  c = void 0;
 var downloaded = 0;
 var collageInfo = {};
 var METHOD_ALBUMS = 1;
@@ -12,9 +12,9 @@ var TIMEFRAME_TOO_SMALL_SPARSE = 3;
 var PERFECT = 2;
 var RETRY = 1;
 
-$(function () {
-  $('#copyright').css('display', 'block').html('Copyright &copy; Alex White  ' + new Date().getFullYear());
-  $('#form').submit(function (e) {
+$(function() {
+  $('#copyright').css('display', 'block').html('Copyright &copy; deSigi  ' + new Date().getFullYear());
+  $('#form').submit(function(e) {
     e.preventDefault();
     localStorage.username = $('#username').val().trim();
     localStorage.period = $('#period').find(':selected').val();
@@ -26,7 +26,7 @@ $(function () {
     localStorage.hideMissingArtwork = $('#hideMissing').is(':checked');
     submit();
   });
-  $('#method').change(function (e) {
+  $('#method').change(function(e) {
     setOverlayLabel();
   });
   canvas = document.getElementById('canvas');
@@ -128,7 +128,7 @@ function getImageLinks() {
 
   var callApi = function callApi() {
     setUrlFromLimit();
-    axios.get(collageInfo.url).then(function (_ref) {
+    axios.get(collageInfo.url).then(function(_ref) {
       var data = _ref.data;
 
       console.log(data);
@@ -136,33 +136,40 @@ function getImageLinks() {
         var artworkStatus = verifyEnoughArtwork(data);
         if (artworkStatus.retryCode !== RETRY) {
           var links = artworkStatus.links,
-              titles = artworkStatus.titles;
+            titles = artworkStatus.titles,
+            artists =artworkStatus.artists;
 
-          makeCollage(links, titles);
+          makeCollage(links, titles, artists);
         } else {
           console.log('Missing ' + artworkStatus.missing + ' images. Retrying with increased limit...');
           currentLimit += artworkStatus.missing;
           callApi();
         }
       } else {
-        var _links = collageInfo.method === METHOD_ALBUMS ? data.topalbums.album.map(function (_ref2) {
+        var _links = collageInfo.method === METHOD_ALBUMS ? data.topalbums.album.map(function(_ref2) {
           var image = _ref2.image;
           return image[collageInfo.size]['#text'];
-        }) : data.topartists.artist.map(function (_ref3) {
+        }) : data.topartists.artist.map(function(_ref3) {
           var image = _ref3.image;
           return image[collageInfo.size]['#text'];
         });
-        var _titles = collageInfo.method === METHOD_ALBUMS ? data.topalbums.album.map(function (_ref4) {
-          var artist = _ref4.artist,
-              name = _ref4.name;
-          return artist.name + ' \u2013 ' + name;
-        }) : data.topartists.artist.map(function (_ref5) {
+        var _titles = collageInfo.method === METHOD_ALBUMS ? data.topalbums.album.map(function(_ref4) {
+          var albumname = _ref4.name;
+          return albumname;
+        }) : data.topartists.artist.map(function(_ref5) {
           var name = _ref5.name;
           return name;
         });
-        makeCollage(_links, _titles);
+        var _artists = collageInfo.method === METHOD_ALBUMS ? data.topalbums.album.map(function(_ref4) {
+          var artist = _ref4.artist;
+          return artist.name;
+        }) : data.topartists.artist.map(function(_ref5) {
+          var artistname = _ref5.name;
+          return artistname;
+        });
+        makeCollage(_links, _titles, _artists);
       }
-    }).catch(function (error) {
+    }).catch(function(error) {
       console.log(error);
       alert('There was an error');
     });
@@ -177,7 +184,8 @@ function getImageLinks() {
       for (var i = 0; i < data.topalbums.album.length; i++) {
         allLinksAndTitles[i] = {
           link: data.topalbums.album[i].image[collageInfo.size]['#text'],
-          title: data.topalbums.album[i].artist.name + ' \u2013 ' + data.topalbums.album[i].name
+          title: data.topalbums.album[i].name,
+          artist: data.topalbums.album[i].artist.name
         };
       }
     } else {
@@ -189,24 +197,29 @@ function getImageLinks() {
       }
     }
 
-    var validLinksAndTitles = allLinksAndTitles.filter(function (_ref6) {
+    var validLinksAndTitles = allLinksAndTitles.filter(function(_ref6) {
       var link = _ref6.link;
       return link && link.length > 0;
     });
-    var missingLinksAndTitles = allLinksAndTitles.filter(function (_ref7) {
+
+    var missingLinksAndTitles = allLinksAndTitles.filter(function(_ref7) {
       var link = _ref7.link;
       return !(link && link.length > 0);
     });
     console.log('missing', missingLinksAndTitles.length);
     console.log('valid', validLinksAndTitles.length);
 
-    artworkStatus.links = validLinksAndTitles.map(function (_ref8) {
+    artworkStatus.links = validLinksAndTitles.map(function(_ref8) {
       var link = _ref8.link;
       return link;
     });
-    artworkStatus.titles = validLinksAndTitles.map(function (_ref9) {
+    artworkStatus.titles = validLinksAndTitles.map(function(_ref9) {
       var title = _ref9.title;
       return title;
+    });
+    artworkStatus.artists = validLinksAndTitles.map(function(_ref9) {
+      var artist = _ref9.artist;
+      return artist;
     });
 
     artworkStatus.missing = allLinksAndTitles.length - validLinksAndTitles.length;
@@ -234,7 +247,7 @@ function getImageLinks() {
   callApi();
 }
 
-function makeCollage(links, titles) {
+function makeCollage(links, titles, artists) {
   for (var i = 0, k = 0; i < collageInfo.rows; i++) {
     for (var j = 0; j < collageInfo.cols; j++, k++) {
       if (!links[k] || links[k].length === 0) {
@@ -242,28 +255,28 @@ function makeCollage(links, titles) {
           // not enough images, we are settling for blank bottom corner
           registerDownloaded();
         } else {
-          loadImage(null, j, i, titles[k], true);
+          loadImage(null, j, i, titles[k], artists[k], true);
         }
       } else {
-        loadImage(links[k], j, i, titles[k], collageInfo.showName);
+        loadImage(links[k], j, i, titles[k], artists[k], collageInfo.showName);
       }
     }
   }
 }
 
-function loadImage(link, i, j, title, showName) {
-  console.log(link, i, j, title, showName);
+function loadImage(link, i, j, title, artist, showName) {
+  console.log(link, i, j, title, artist, showName);
   if (!link) {
-    printName(i, j, title);
+    printName(i, j, title, artist);
     registerDownloaded();
   } else {
     var img = new Image(collageInfo.sideLength, collageInfo.sideLength);
     img.crossOrigin = 'Anonymous';
     img.classList.add('img-responsive');
-    img.onload = function () {
+    img.onload = function() {
       c.drawImage(img, i * collageInfo.sideLength, j * collageInfo.sideLength);
       if (showName && title && title.length > 0) {
-        printName(i, j, title, true);
+        printName(i, j, title, artist, true);
       }
       registerDownloaded();
     };
@@ -271,28 +284,33 @@ function loadImage(link, i, j, title, showName) {
   }
 }
 
-function printName(i, j, title) {
+function printName(i, j, title, artist) {
   var overlay = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
-  c.textAlign = 'center';
-  var fontSize = Math.min(collageInfo.sideLength * 1.3 / title.length, collageInfo.sideLength / 15);
+  c.textAlign = 'left';
+  var fontSize = 0.04 * collageInfo.sideLength;
+  console.log("font size", fontSize);
   c.font = fontSize + 'pt sans-serif';
   c.fillStyle = 'white';
-  var textX = i * collageInfo.sideLength + collageInfo.sideLength / 2;
+  var textX = i * collageInfo.sideLength + collageInfo.sideLength * 0.01;
   var textY = void 0;
+  var textY2 = void 0;
   c.save();
   if (overlay) {
     c.shadowBlur = 5;
-    c.shadowColor = '#2b2b2b';
+    c.shadowColor = '#000000';
     c.shadowOffsetX = 2;
     c.shadowOffsetY = 2;
-    c.textBaseline = 'bottom';
-    textY = j * collageInfo.sideLength + collageInfo.sideLength - collageInfo.sideLength / 30;
+    c.textBaseline = 'top';
+    textY = j * collageInfo.sideLength + collageInfo.sideLength * 0.01;
+    textY2 = j * collageInfo.sideLength + fontSize + (collageInfo.sideLength * 0.015);
   } else {
-    textY = j * collageInfo.sideLength + collageInfo.sideLength / 2;
-    c.textBaseline = 'middle';
+    textY = j * collageInfo.sideLength + collageInfo.sideLength * 0.01;
+    textY2 = j * collageInfo.sideLength + fontSize + (collageInfo.sideLength * 0.015);
+    c.textBaseline = 'top';
   }
-  c.fillText(title, textX, textY);
+  c.fillText(artist, textX, textY);
+  c.fillText(title, textX, textY2);
   c.restore();
 }
 
