@@ -118,17 +118,17 @@ function getImageLinks() {
   var setUrlFromLimit = function setUrlFromLimit() {
     switch (collageInfo.method) {
       case METHOD_ALBUMS:
-        collageInfo.url = 'http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=' + username + '&period=' + period + '&api_key=' + API_KEY + '&limit=' + currentLimit + '&format=json';
+        collageInfo.url = '//ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=' + username + '&period=' + period + '&api_key=' + API_KEY + '&limit=' + currentLimit + '&format=json';
         break;
       case METHOD_ARTISTS:
-        collageInfo.url = 'http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=' + username + '&period=' + period + '&api_key=' + API_KEY + '&limit=' + currentLimit + '&format=json';
+        collageInfo.url = '//ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=' + username + '&period=' + period + '&api_key=' + API_KEY + '&limit=' + currentLimit + '&format=json';
         break;
     }
   };
 
   var callApi = function callApi() {
     setUrlFromLimit();
-    axios.get(collageInfo.url, { crossdomain: true }).then(function(_ref) {
+    axios.get('https://lastfm.desigi.com/repeater.php?url=http:' + collageInfo.url).then(function(_ref) {
       var data = _ref.data;
 
       console.log(data);
