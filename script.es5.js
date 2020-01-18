@@ -118,10 +118,10 @@ function getImageLinks() {
   var setUrlFromLimit = function setUrlFromLimit() {
     switch (collageInfo.method) {
       case METHOD_ALBUMS:
-        collageInfo.url = '//ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=' + username + '&period=' + period + '&api_key=' + API_KEY + '&limit=' + currentLimit + '&format=json';
+        collageInfo.url = 'http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=' + username + '&period=' + period + '&api_key=' + API_KEY + '&limit=' + currentLimit + '&format=json';
         break;
       case METHOD_ARTISTS:
-        collageInfo.url = '//ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=' + username + '&period=' + period + '&api_key=' + API_KEY + '&limit=' + currentLimit + '&format=json';
+        collageInfo.url = 'http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=' + username + '&period=' + period + '&api_key=' + API_KEY + '&limit=' + currentLimit + '&format=json';
         break;
     }
   };
