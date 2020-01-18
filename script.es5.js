@@ -128,9 +128,7 @@ function getImageLinks() {
 
   var callApi = function callApi() {
     setUrlFromLimit();
-    axios.defaults.headers.post['Content-Type'] ='application/x-www-form-urlencoded';
-    axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-    axios.get(collageInfo.url).then(function(_ref) {
+    axios.get(collageInfo.url, { crossdomain: true }).then(function(_ref) {
       var data = _ref.data;
 
       console.log(data);
