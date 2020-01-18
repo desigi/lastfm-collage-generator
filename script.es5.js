@@ -111,7 +111,7 @@ function getImageLinks() {
   // Last.fm specific
   var username = localStorage.username;
   var period = localStorage.period;
-  var API_KEY = 'b7cad0612089bbbfecfc08acc52087f1';
+  var API_KEY = '89d4990b2a8eee5253200b2cb2d67a21';
   var limit = collageInfo.rows * collageInfo.cols;
   var currentLimit = limit;
 
