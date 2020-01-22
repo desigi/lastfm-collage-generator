@@ -99,6 +99,7 @@ function initCanvas() {
   $('#canvasImg').remove();
   $('#canvas').css('display', 'inline');
   $('#loading').css('display', 'block');
+  $('#download-canvas').css('display', 'none');
 
   canvas.width = collageInfo.sideLength * collageInfo.cols;
   canvas.height = collageInfo.sideLength * collageInfo.rows;
@@ -318,13 +319,23 @@ function registerDownloaded() {
   downloaded++;
   if (downloaded === collageInfo.imageNum) {
     $('#loading').css('display', 'none');
-    $('#canvas').css('display', 'none');
+    $('#download-canvas').css('display', 'inline');
+    /*$('#canvas').css('display', 'none');
     var canvasImg = new Image(collageInfo.sideLength * collageInfo.cols, collageInfo.sideLength * collageInfo.rows);
     canvasImg.src = canvas.toDataURL('image/png');
     canvasImg.classList.add('img-responsive');
     canvasImg.crossOrigin = 'Anonymous';
     canvasImg.style = 'margin: 10px auto;';
     canvasImg.id = 'canvasImg';
-    $('#generated').append(canvasImg);
+    $('#generated').append(canvasImg);*/
   }
 }
+
+function downloadCanvas(link, canvasId, filename) {
+    link.href = document.getElementById(canvasId).toDataURL('image/jpeg', 1.0);
+    link.download = filename;
+}
+
+document.getElementById('download').addEventListener('click', function() {
+    downloadCanvas(this, 'canvas', 'lastfm-collage.png');
+}, false);
