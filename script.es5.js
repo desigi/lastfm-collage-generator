@@ -332,7 +332,7 @@ function registerDownloaded() {
 }
 
 function downloadCanvas(link, canvasId, filename) {
-    link.href = document.getElementById(canvasId).toDataURL('image/jpeg', 1.0);
+    link.href = document.getElementById(canvasId).toDataURL('image/jpeg');
     link.download = filename;
 }
 
