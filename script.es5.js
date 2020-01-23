@@ -331,11 +331,25 @@ function registerDownloaded() {
   }
 }
 
-function downloadCanvas(link, canvasId, filename) {
+/*function downloadCanvas(link, canvasId, filename) {
     link.href = document.getElementById(canvasId).toDataURL('image/png');
     link.download = filename;
 }
 
 document.getElementById('download').addEventListener('click', function() {
     downloadCanvas(this, 'canvas', 'lastfm-collage.png');
-}, false);
+}, false);*/
+
+document.getElementById("download-button").onclick = function() {
+
+  var link = document.createElement("a");
+      link.download = "lastfm-collage.png";
+
+      canvas.toBlob(function(blob){
+      link.href = URL.createObjectURL(blob);
+      console.log(blob);
+      console.log(link.href);
+      link.click();
+    },'image/png');
+      
+}
