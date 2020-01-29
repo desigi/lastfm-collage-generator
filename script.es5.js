@@ -24,6 +24,7 @@ $(function() {
     localStorage.method = $('#method').find(':selected').val();
     localStorage.showName = $('#showName').is(':checked');
     localStorage.hideMissingArtwork = $('#hideMissing').is(':checked');
+    localStorage.playcount = $('#playcount').is(':checked');
     submit();
   });
   $('#method').change(function(e) {
@@ -43,6 +44,7 @@ function setFieldsFromLocalStorage() {
   setFieldFromLocalStorage('method');
   $('#showName').prop('checked', localStorage.showName === 'true');
   $('#hideMissing').prop('checked', localStorage.hideMissingArtwork === 'true');
+  $('#playcount').prop('checked', localStorage.playcount === 'true');
   setOverlayLabel();
 }
 
@@ -72,6 +74,7 @@ function submit() {
 function setCollageInfo() {
   collageInfo.showName = localStorage.showName === 'true';
   collageInfo.hideMissingArtwork = localStorage.hideMissingArtwork === 'true';
+  collageInfo.playcount = localStorage.playcount === 'true';
   collageInfo.method = parseInt(localStorage.method);
   collageInfo.size = parseInt(localStorage.size);
   collageInfo.rows = parseInt(localStorage.rows);
@@ -138,9 +141,10 @@ function getImageLinks() {
         if (artworkStatus.retryCode !== RETRY) {
           var links = artworkStatus.links,
             titles = artworkStatus.titles,
-            artists =artworkStatus.artists;
+            artists = artworkStatus.artists,
+            playcount = artworkStatus.playcount;
 
-          makeCollage(links, titles, artists);
+          makeCollage(links, titles, artists, playcount);
         } else {
           console.log('Missing ' + artworkStatus.missing + ' images. Retrying with increased limit...');
           currentLimit += artworkStatus.missing;
@@ -161,14 +165,21 @@ function getImageLinks() {
           var name = _ref5.name;
           return name;
         });
-        var _artists = collageInfo.method === METHOD_ALBUMS ? data.topalbums.album.map(function(_ref4) {
-          var artist = _ref4.artist;
+        var _artists = collageInfo.method === METHOD_ALBUMS ? data.topalbums.album.map(function(_ref10) {
+          var artist = _ref10.artist;
           return artist.name;
-        }) : data.topartists.artist.map(function(_ref5) {
-          var artistname = _ref5.name;
+        }) : data.topartists.artist.map(function(_ref11) {
+          var artistname = _ref11.name;
           return artistname;
         });
-        makeCollage(_links, _titles, _artists);
+        var _playcount = collageInfo.method === METHOD_ALBUMS ? data.topalbums.album.map(function(_ref12) {
+          var playcount = _ref12.playcount;
+          return playcount;
+        }) : data.topartists.artist.map(function(_ref13) {
+          var playcount = _ref13.playcount;
+          return playcount;
+        });
+        makeCollage(_links, _titles, _artists, _playcount);
       }
     }).catch(function(error) {
       console.log(error);
@@ -186,14 +197,16 @@ function getImageLinks() {
         allLinksAndTitles[i] = {
           link: data.topalbums.album[i].image[collageInfo.size]['#text'],
           title: data.topalbums.album[i].name,
-          artist: data.topalbums.album[i].artist.name
+          artist: data.topalbums.album[i].artist.name,
+          playcount: data.topalbums.album[i].playcount
         };
       }
     } else {
       for (var _i = 0; _i < data.topartists.artist.length; _i++) {
         allLinksAndTitles[_i] = {
           link: data.topartists.artist[_i].image[collageInfo.size]['#text'],
-          title: data.topartists.artist[_i].name
+          title: data.topartists.artist[_i].name,
+          playcount: data.topartists.artist[_i].playcount
         };
       }
     }
@@ -218,9 +231,13 @@ function getImageLinks() {
       var title = _ref9.title;
       return title;
     });
-    artworkStatus.artists = validLinksAndTitles.map(function(_ref9) {
-      var artist = _ref9.artist;
+    artworkStatus.artists = validLinksAndTitles.map(function(_ref14) {
+      var artist = _ref14.artist;
       return artist;
+    });
+    artworkStatus.playcount = validLinksAndTitles.map(function(_ref15) {
+      var playcount = _ref15.playcount;
+      return playcount;
     });
 
     artworkStatus.missing = allLinksAndTitles.length - validLinksAndTitles.length;
@@ -248,7 +265,7 @@ function getImageLinks() {
   callApi();
 }
 
-function makeCollage(links, titles, artists) {
+function makeCollage(links, titles, artists, playcount) {
   for (var i = 0, k = 0; i < collageInfo.rows; i++) {
     for (var j = 0; j < collageInfo.cols; j++, k++) {
       if (!links[k] || links[k].length === 0) {
@@ -256,19 +273,19 @@ function makeCollage(links, titles, artists) {
           // not enough images, we are settling for blank bottom corner
           registerDownloaded();
         } else {
-          loadImage(null, j, i, titles[k], artists[k], true);
+          loadImage(null, j, i, titles[k], artists[k], playcount[k], true);
         }
       } else {
-        loadImage(links[k], j, i, titles[k], artists[k], collageInfo.showName);
+        loadImage(links[k], j, i, titles[k], artists[k], playcount[k], collageInfo.showName);
       }
     }
   }
 }
 
-function loadImage(link, i, j, title, artist, showName) {
-  console.log(link, i, j, title, artist, showName);
+function loadImage(link, i, j, title, artist, playcount, showName) {
+  console.log(link, i, j, title, artist, playcount, showName);
   if (!link) {
-    printName(i, j, title, artist);
+    printName(i, j, title, artist, playcount);
     registerDownloaded();
   } else {
     var img = new Image(collageInfo.sideLength, collageInfo.sideLength);
@@ -277,7 +294,7 @@ function loadImage(link, i, j, title, artist, showName) {
     img.onload = function() {
       c.drawImage(img, i * collageInfo.sideLength, j * collageInfo.sideLength);
       if (showName && title && title.length > 0) {
-        printName(i, j, title, artist, true);
+        printName(i, j, title, artist, playcount, true);
       }
       registerDownloaded();
     };
@@ -285,7 +302,7 @@ function loadImage(link, i, j, title, artist, showName) {
   }
 }
 
-function printName(i, j, title, artist) {
+function printName(i, j, title, artist, playcount) {
   var overlay = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
   c.textAlign = 'left';
@@ -296,6 +313,7 @@ function printName(i, j, title, artist) {
   var textX = i * collageInfo.sideLength + collageInfo.sideLength * 0.01;
   var textY = void 0;
   var textY2 = void 0;
+  var textY3 = void 0;
   c.save();
   if (overlay) {
     c.shadowBlur = 5;
@@ -305,13 +323,28 @@ function printName(i, j, title, artist) {
     c.textBaseline = 'top';
     textY = j * collageInfo.sideLength + collageInfo.sideLength * 0.01;
     textY2 = j * collageInfo.sideLength + fontSize + (collageInfo.sideLength * 0.015);
+    textY3 = j * collageInfo.sideLength + (fontSize + (collageInfo.sideLength * 0.015)) * 2;
   } else {
     textY = j * collageInfo.sideLength + collageInfo.sideLength * 0.01;
     textY2 = j * collageInfo.sideLength + fontSize + (collageInfo.sideLength * 0.015);
+    textY3 = j * collageInfo.sideLength + (fontSize + (collageInfo.sideLength * 0.015)) * 2;
     c.textBaseline = 'top';
   }
   c.fillText(artist, textX, textY);
-  c.fillText(title, textX, textY2);
+  
+  if (parseInt($('#method').find(':selected').val()) === METHOD_ALBUMS) {
+    c.fillText(title, textX, textY2); 
+  }
+
+  if ($('#playcount').is(':checked')) {
+    if (parseInt($('#method').find(':selected').val()) === METHOD_ARTISTS) {
+      console.log("Show playcount");
+      c.fillText('Plays: ' + playcount, textX, textY2);
+    } else {
+    c.fillText('Plays: ' + playcount, textX, textY3);
+    }
+    
+  }
   c.restore();
 }
 
