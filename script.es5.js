@@ -68,6 +68,20 @@ function submit() {
   setCollageInfo();
   initCanvas();
 
+  document.getElementById("download-button").onclick = function() {
+
+  var link = document.createElement("a");
+      link.download = "lastfm-collage.png";
+
+      canvas.toBlob(function(blob){
+      link.href = URL.createObjectURL(blob);
+      console.log(blob);
+      console.log(link.href);
+      link.click();
+    },'image/png');
+      
+}
+
   getImageLinks();
 }
 
@@ -343,7 +357,7 @@ function printName(i, j, title, artist, playcount) {
     } else {
     c.fillText('Plays: ' + playcount, textX, textY3);
     }
-    
+
   }
   c.restore();
 }
@@ -373,16 +387,3 @@ document.getElementById('download').addEventListener('click', function() {
     downloadCanvas(this, 'canvas', 'lastfm-collage.png');
 }, false);*/
 
-document.getElementById("download-button").onclick = function() {
-
-  var link = document.createElement("a");
-      link.download = "lastfm-collage.png";
-
-      canvas.toBlob(function(blob){
-      link.href = URL.createObjectURL(blob);
-      console.log(blob);
-      console.log(link.href);
-      link.click();
-    },'image/png');
-      
-}
