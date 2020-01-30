@@ -115,8 +115,12 @@ function setCollageInfo() {
 function initCanvas() {
   $('#canvasImg').remove();
   $('#canvas').css('display', 'inline');
-  $('#loading').css('display', 'block');
-  $('#download-canvas').css('display', 'none');
+  /*$('#loading').css('display', 'block');*/
+  document.getElementById("loading").classList.remove('invisible');
+  document.getElementById("loading").classList.add('visible');
+  /*$('#download-canvas').css('display', 'none');*/
+  document.getElementById("download-canvas").classList.remove('invisible');
+  document.getElementById("download-canvas").classList.add('visible');
 
   canvas.width = collageInfo.sideLength * collageInfo.cols;
   canvas.height = collageInfo.sideLength * collageInfo.rows;
@@ -365,8 +369,10 @@ function printName(i, j, title, artist, playcount) {
 function registerDownloaded() {
   downloaded++;
   if (downloaded === collageInfo.imageNum) {
-    $('#loading').css('display', 'none');
-    $('#download-canvas').css('display', 'inline');
+    document.getElementById("loading").classList.remove('visible');
+    document.getElementById("loading").classList.add('invisible');
+    /*$('#download-canvas').css('display', 'inline');*/
+    document.getElementById("download-canvas").classList.remove('visible');
     /*$('#canvas').css('display', 'none');
     var canvasImg = new Image(collageInfo.sideLength * collageInfo.cols, collageInfo.sideLength * collageInfo.rows);
     canvasImg.src = canvas.toDataURL('image/png');

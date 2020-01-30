@@ -4,6 +4,7 @@
 
 #title_div {
     margin-bottom: 12px;
+    justify-content: center;
 }
 
 #statements {
@@ -68,10 +69,6 @@ fieldset[disabled] .btn-login:focus {
     background-color: #b80610;
 }
 
-h2 {
-    color: #ffffff;
-}
-
 #statements span {
     color: #ffffff;
     font-size: 24px;
@@ -79,6 +76,7 @@ h2 {
 
 body {
     padding-bottom: 30px;
+    color: #ffffff;
 }
 
 .navbar {
@@ -109,3 +107,4 @@ label {
 .checked-stack {
     display: block;
 }
+
