@@ -65,10 +65,6 @@ fieldset[disabled] .btn-login:focus {
     margin-right: 8px;
 }
 
-.container-fluid {
-    background-color: #b80610;
-}
-
 #statements span {
     color: #ffffff;
     font-size: 24px;
@@ -77,6 +73,7 @@ fieldset[disabled] .btn-login:focus {
 body {
     padding-bottom: 30px;
     color: #ffffff;
+    background-color: #b80610;
 }
 
 .navbar {
