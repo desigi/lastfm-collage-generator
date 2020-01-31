@@ -119,8 +119,8 @@ function initCanvas() {
   document.getElementById("loading").classList.remove('invisible');
   document.getElementById("loading").classList.add('visible');
   /*$('#download-canvas').css('display', 'none');*/
-  document.getElementById("download-canvas").classList.remove('invisible');
-  document.getElementById("download-canvas").classList.add('visible');
+  document.getElementById("download-canvas").classList.remove('visible');
+  document.getElementById("download-canvas").classList.add('invisible');
 
   canvas.width = collageInfo.sideLength * collageInfo.cols;
   canvas.height = collageInfo.sideLength * collageInfo.rows;
@@ -372,7 +372,8 @@ function registerDownloaded() {
     document.getElementById("loading").classList.remove('visible');
     document.getElementById("loading").classList.add('invisible');
     /*$('#download-canvas').css('display', 'inline');*/
-    document.getElementById("download-canvas").classList.remove('visible');
+    document.getElementById("download-canvas").classList.remove('invisible');
+    document.getElementById("download-canvas").classList.add('visible');
     /*$('#canvas').css('display', 'none');
     var canvasImg = new Image(collageInfo.sideLength * collageInfo.cols, collageInfo.sideLength * collageInfo.rows);
     canvasImg.src = canvas.toDataURL('image/png');

@@ -83,7 +83,7 @@
 					<label class="sr-only" for="username">Username</label>
 					<input type="text" class="form-control" placeholder="Username" id="username" required />
 				</div>
-				<div class="form-group col-sm">
+				<div class="form-group col">
 					<label class="sr-only" for="period">Timeframe</label>
 					<select id="period" class="form-control">
 						<option selected disabled>Timeframe:</option>
@@ -96,76 +96,84 @@
 					</select>
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="sr-only" for="cols">Columns</label>
-				<select id="cols" class="form-control">
-					<option selected disabled>Columns:</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-					<option value="6">6</option>
-					<option value="7">7</option>
-					<option value="8">8</option>
-					<option value="9">9</option>
-					<option value="10">10</option>
-					<option value="11">11</option>
-					<option value="12">12</option>
-					<option value="13">13</option>
-					<option value="14">14</option>
-				</select>
+			<div class="row flex-row">
+				<div class="form-group col">
+					<label class="sr-only" for="cols">Columns</label>
+					<select id="cols" class="form-control">
+						<option selected disabled>Columns:</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+						<option value="13">13</option>
+						<option value="14">14</option>
+					</select>
+				</div>
+				<div class="form-group col">
+					<label class="sr-only" for="rows">Rows</label>
+					<select id="rows" class="form-control">
+						<option selected disabled>Rows:</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+						<option value="6">6</option>
+						<option value="7">7</option>
+						<option value="8">8</option>
+						<option value="9">9</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+						<option value="13">13</option>
+						<option value="14">14</option>
+					</select>
+				</div>
 			</div>
-			<div class="form-group">
-				<label class="sr-only" for="rows">Rows</label>
-				<select id="rows" class="form-control">
-					<option selected disabled>Rows:</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-					<option value="6">6</option>
-					<option value="7">7</option>
-					<option value="8">8</option>
-					<option value="9">9</option>
-					<option value="10">10</option>
-					<option value="11">11</option>
-					<option value="12">12</option>
-					<option value="13">13</option>
-					<option value="14">14</option>
-				</select>
+			<div class="row flex-row">
+				<div class="form-group col">
+					<label class="sr-only" for="size">Size</label>
+					<select id="size" class="form-control">
+						<option selected disabled>Size:</option>
+						<option value="0">Small</option>
+						<option value="1">Medium</option>
+						<option value="2">Large</option>
+						<option value="3">Extra Large</option>
+					</select>
+				</div>
+				<div class="form-group col">
+					<label class="sr-only" for="method">Metric</label>
+					<select id="method" class="form-control">
+						<option disabled>Metric:</option>
+						<option selected value="1">Top Albums</option>
+						<option value="2">Top Artists</option>
+					</select>
+				</div>
 			</div>
-			<div class="form-group">
-				<label class="sr-only" for="size">Size</label>
-				<select id="size" class="form-control">
-					<option selected disabled>Size:</option>
-					<option value="0">Small</option>
-					<option value="1">Medium</option>
-					<option value="2">Large</option>
-					<option value="3">Extra Large</option>
-				</select>
+			<div class="row form-inline mx-4">
+				<div class="form-check col">
+					<input type="checkbox" name="showName" class="form-check-input" value="" id="showName">
+					<label id="showNameLabel" class="form-check-label" for="showName" style="font-weight: normal;">Overlay album details</label>
+				</div>
+				<div class="form-check col">
+					<input type="checkbox" name="hideMissing" class="form-check-input" value="" id="hideMissing">
+					<label id="hideMissingLabel" class="form-check-label" for="hideMissing" style="font-weight: normal;">Hide missing
+						artwork</label>
+				</div>
+				<div class="form-check col">
+					<input type="checkbox" name="playcount" class="form-check-input" value="" id="playcount">
+					<label id="playcount" class="form-check-label" for="playcount" style="font-weight: normal;">Overlay play count</label>
+				</div>
 			</div>
-			<div class="form-group">
-				<label class="sr-only" for="method">Metric</label>
-				<select id="method" class="form-control">
-					<option disabled>Metric:</option>
-					<option selected value="1">Top Albums</option>
-					<option value="2">Top Artists</option>
-				</select>
+			<div class="row justify-content-center my-4">
+				<button type="submit" class="btn btn-default" id="getAlbums">Generate</button>
 			</div>
-			<div class="form-group">
-				<input type="checkbox" name="showName" class="form-check-input" value="" id="showName">
-				<label id="showNameLabel" class="form-check-label" for="showName" style="font-weight: normal;">Overlay album name</label>
-			</div>
-			<div class="form-group">
-				<input type="checkbox" name="hideMissing" class="form-check-input" value="" id="hideMissing">
-				<label id="hideMissingLabel" class="form-check-label" for="hideMissing" style="font-weight: normal;">Hide missing
-					artwork</label>
-			</div>
-			<div class="form-group">
-				<input type="checkbox" name="playcount" class="form-check-input" value="" id="playcount">
-				<label id="playcount" class="form-check-label" for="playcount" style="font-weight: normal;">Show play count</label>
-			</div>
-			<button type="submit" class="btn btn-default" id="getAlbums">Generate</button>
 		</form>
 	</div>
 	<div id="loading" class="row justify-content-center invisible">
