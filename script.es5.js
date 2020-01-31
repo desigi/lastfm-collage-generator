@@ -357,9 +357,9 @@ function printName(i, j, title, artist, playcount) {
   if ($('#playcount').is(':checked')) {
     if (parseInt($('#method').find(':selected').val()) === METHOD_ARTISTS) {
       console.log("Show playcount");
-      c.fillText('Plays: ' + playcount, textX, textY2);
+      c.fillText(playcount + ' plays', textX, textY2);
     } else {
-    c.fillText('Plays: ' + playcount, textX, textY3);
+    c.fillText(playcount + ' plays', textX, textY3);
     }
 
   }
